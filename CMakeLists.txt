@@ -75,6 +75,7 @@ catkin_package(
     robot_localization_estimator
     ros_robot_localization_listener
     ukf
+    pf
   CATKIN_DEPENDS
     cmake_modules
     diagnostic_msgs
@@ -115,6 +116,7 @@ add_library(filter_utilities src/filter_utilities.cpp)
 add_library(filter_base src/filter_base.cpp)
 add_library(ekf src/ekf.cpp)
 add_library(ukf src/ukf.cpp)
+add_library(pf src/pf.cpp)
 add_library(robot_localization_estimator src/robot_localization_estimator.cpp)
 add_library(ros_robot_localization_listener src/ros_robot_localization_listener.cpp)
 add_library(ros_filter_utilities src/ros_filter_utilities.cpp)
@@ -138,8 +140,9 @@ target_link_libraries(filter_utilities ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
 target_link_libraries(filter_base filter_utilities ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
 target_link_libraries(ekf filter_base ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
 target_link_libraries(ukf filter_base ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
-target_link_libraries(ros_filter ekf ukf ros_filter_utilities ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
-target_link_libraries(robot_localization_estimator filter_utilities filter_base ekf ukf ${EIGEN3_LIBRARIES})
+target_link_libraries(pf filter_base ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
+target_link_libraries(ros_filter ekf ukf pf ros_filter_utilities ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES})
+target_link_libraries(robot_localization_estimator filter_utilities filter_base ekf ukf pf ${EIGEN3_LIBRARIES})
 target_link_libraries(ros_robot_localization_listener robot_localization_estimator ros_filter_utilities
   ${catkin_LIBRARIES} ${EIGEN3_LIBRARIES} ${YAML_CPP_LIBRARIES})
 target_link_libraries(robot_localization_listener_node ros_robot_localization_listener ${catkin_LIBRARIES})
@@ -167,6 +170,7 @@ install(TARGETS
   robot_localization_listener_node
   ukf
   ukf_localization_node
+  pf
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
@@ -263,6 +267,12 @@ if (CATKIN_ENABLE_TESTING)
                     test/test_ukf_localization_node_bag3.test
                     test/test_localization_node_bag_pose_tester.cpp)
   target_link_libraries(test_ukf_localization_node_bag3 ${catkin_LIBRARIES} ${rostest_LIBRARIES})
+
+  #### PF TESTS #####
+  add_rostest_gtest(test_pf
+                    test/test_pf.test
+                    test/test_pf.cpp)
+  target_link_libraries(test_pf ros_filter pf ${catkin_LIBRARIES} ${rostest_LIBRARIES})
 
   #### RLE/RLL TESTS #####
   add_rostest_gtest(test_robot_localization_estimator
