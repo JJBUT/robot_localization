@@ -450,7 +450,7 @@ template<class T> class RosFilter
     //!
     diagnostic_updater::Updater diagnosticUpdater_;
 
-    //! @brief Our filter (EKF, UKF, etc.)
+    //! @brief Our filter (EKF, UKF, PF, etc.)
     //!
     T filter_;
 

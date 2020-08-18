@@ -34,6 +34,7 @@
 #include "robot_localization/filter_utilities.h"
 #include "robot_localization/ekf.h"
 #include "robot_localization/ukf.h"
+#include "robot_localization/pf.h"
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
@@ -3202,3 +3203,4 @@ namespace RobotLocalization
 // is placed in a .cpp file.
 template class RobotLocalization::RosFilter<RobotLocalization::Ekf>;
 template class RobotLocalization::RosFilter<RobotLocalization::Ukf>;
+template class RobotLocalization::RosFilter<RobotLocalization::Pf>;

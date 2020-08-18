@@ -103,6 +103,7 @@ enum FilterType
 {
   EKF = 0,
   UKF,
+  PF,
   NotDefined
 };
 }  // namespace FilterTypes
