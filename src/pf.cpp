@@ -30,21 +30,75 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ROBOT_LOCALIZATION_ROS_FILTER_TYPES_H
-#define ROBOT_LOCALIZATION_ROS_FILTER_TYPES_H
-
-#include "robot_localization/ros_filter.h"
-#include "robot_localization/ekf.h"
-#include "robot_localization/ukf.h"
 #include "robot_localization/pf.h"
+#include "robot_localization/filter_common.h"
+
+#include <XmlRpcException.h>
+
+#include <sstream>
+#include <iomanip>
+#include <limits>
+
+#include <Eigen/Cholesky>
+
+#include <iostream>
+#include <vector>
+
+#include <assert.h>
 
 namespace RobotLocalization
 {
+  Pf::Pf(std::vector<double> args) :
+    FilterBase(),  // Must initialize filter base!
+    uncorrected_(true)
+  {
+    assert(args.size() == 2);
 
-typedef RosFilter<Ekf> RosEkf;
-typedef RosFilter<Ukf> RosUkf;
-typedef RosFilter<Pf> RosPf;
+    int np = args[0];
+    int np_min = args[1];
 
-}
+    particles_.resize(np, Eigen::VectorXd(STATE_SIZE));
 
-#endif  // ROBOT_LOCALIZATION_ROS_FILTER_TYPES_H
+  
+    particleWeights_.resize(np);
+   
+    
+    for (size_t i = 0; i < np; ++i)
+    {
+      particleWeights_[i] = 1.0/np_min;
+      particles_[i].setZero();
+    }
+  }
+
+  
+
+  
+
+  Pf::~Pf()
+  {
+  }
+
+  void Pf::correct(const Measurement &measurement)
+  {
+    FB_DEBUG("---------------------- Ukf::correct ----------------------\n" <<
+             "State is:\n" << state_ <<
+             "\nMeasurement is:\n" << measurement.measurement_ <<
+             "\nMeasurement covariance is:\n" << measurement.covariance_ << "\n");
+
+
+    FB_DEBUG("\nCorrected full state is:\n" << state_ <<
+             "\n\n---------------------- /Ukf::correct ----------------------\n");
+  }
+
+  void Pf::predict(const double referenceTime, const double delta)
+  {
+    FB_DEBUG("---------------------- Ukf::predict ----------------------\n" <<
+             "delta is " << delta <<
+             "\nstate is " << state_ << "\n");
+
+
+    FB_DEBUG("Predicted state is:\n" << state_ <<
+             "\n\n--------------------- /Ukf::predict ----------------------\n");
+  }
+
+}  // namespace RobotLocalization

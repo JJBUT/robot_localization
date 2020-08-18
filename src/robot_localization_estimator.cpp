@@ -33,6 +33,7 @@
 #include "robot_localization/robot_localization_estimator.h"
 #include "robot_localization/ekf.h"
 #include "robot_localization/ukf.h"
+#include "robot_localization/pf.h"
 
 #include <vector>
 
@@ -53,6 +54,10 @@ RobotLocalizationEstimator::RobotLocalizationEstimator(unsigned int buffer_capac
   else if ( filter_type == FilterTypes::UKF )
   {
     filter_ = new Ukf(filter_args);
+  }
+  else if ( filter_type == FilterTypes::PF )
+  {
+    filter_ = new Pf(filter_args);
   }
 
   filter_->setProcessNoiseCovariance(process_noise_covariance);

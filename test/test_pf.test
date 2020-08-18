@@ -1,0 +1,7 @@
+<!-- Launch file for test_pf -->
+
+<launch>
+
+    <test test-name="test_pf" pkg="robot_localization" type="test_pf" clear_params="true" time-limit="100.0" />
+
+</launch>

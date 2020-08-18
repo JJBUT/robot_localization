@@ -59,6 +59,10 @@ FilterType filterTypeFromString(const std::string& filter_type_str)
   {
     return FilterTypes::UKF;
   }
+  else if ( filter_type_str == "pf" )
+  {
+    return FilterTypes::PF;
+  }
   else
   {
     return FilterTypes::NotDefined;
